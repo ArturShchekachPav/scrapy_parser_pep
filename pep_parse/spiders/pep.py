@@ -4,33 +4,35 @@ from pep_parse.items import PepParseItem
 
 
 class PepSpider(scrapy.Spider):
-    name = 'pep'
-    allowed_domains = ['peps.python.org']
-    start_urls = ['https://peps.python.org/']
+    name = "pep"
+    allowed_domains = ["peps.python.org"]
+    start_urls = ["https://peps.python.org/"]
 
     def parse(self, response):
-        for pep_row in response.css('table.pep-zero-table tbody tr'):
-            tds = pep_row.css('td')
+        for pep_row in response.css("table.pep-zero-table tbody tr"):
+            tds = pep_row.css("td")
 
             data = {
-                'number': tds[1].css('::text').get().strip(),
-                'name': tds[2].css('::text').get().strip(),
+                "number": tds[1].css("::text").get().strip(),
+                "name": tds[2].css("::text").get().strip(),
             }
 
             yield response.follow(
-                tds[1].css('a::attr(href)').get(),
+                tds[1].css("a::attr(href)").get(),
                 callback=self.parse_pep,
-                meta={'data': data}
+                meta={"data": data},
             )
 
     def parse_pep(self, response):
-        status = response.xpath(
-            '//dt[contains(., "Status")]/following-sibling::dd[1]//text()'
-        ).get().strip()
-        data = response.meta['data']
+        status = (
+            response.xpath(
+                '//dt[contains(., "Status")]/following-sibling::dd[1]//text()'
+            )
+            .get()
+            .strip()
+        )
+        data = response.meta["data"]
 
         yield PepParseItem(
-            number=data['number'],
-            name=data['name'],
-            status=status
-        )     
+            number=data["number"], name=data["name"], status=status
+        )

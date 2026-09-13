@@ -3,10 +3,11 @@ from scrapy.exporters import CsvItemExporter
 
 class PepCsvItemExporter(CsvItemExporter):
     """Feed-экспортёр для pep."""
+
     FIELD_HEADERS = {
-        'number': 'Номер',
-        'name': 'Название',
-        'status': 'Статус',
+        "number": "Номер",
+        "name": "Название",
+        "status": "Статус",
     }
 
     def _write_headers_and_set_fields_to_export(self, item):
